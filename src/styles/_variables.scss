@@ -33,11 +33,9 @@ $basic-colors: (
 );
 
 // Brands
-$brand-primary: #782fe3;
-$brand-secondary: #3ada84;
-$brand-tertiary: #6530d9;
-$brand-quaternary: #b294f2;
-$brand-quinary: #f2f2f2;
+$brand-primary: #da0041;
+$brand-secondary: #ffca00;
+$brand-tertiary: #343a40;
 
 $sub-menu-color: scale-color($brand-primary, $lightness: 90%);
 $filter-background: rgba(0, 0, 0, 0.03);
@@ -46,12 +44,10 @@ $brand-colors: (
     'brand-primary': $brand-primary,
     'brand-secondary': $brand-secondary,
     'brand-tertiary': $brand-tertiary,
-    'brand-quaternary': $brand-quaternary,
-    'brand-quinary': $brand-quinary,
 );
 
 $theme-colors: map-merge($basic-colors, $brand-colors);
 
 $font-family-sans-serif: 'Roboto', sans-serif;
-$font-size-base: 0.8rem;
+// $font-size-base: 0.8rem;
 $input-color: $gray-600;
