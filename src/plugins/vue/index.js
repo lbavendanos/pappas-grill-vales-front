@@ -9,7 +9,8 @@ import './font-awesome'
 
 Vue.use(VueEvents)
 Vue.use(VueProgressBar, {
-  color: '#3ada84',
+  color: '#ffca00',
+  thickness: '3px',
 })
 Vue.use(BootstrapVue)
 // Vue.use(VueGoogleCharts)
