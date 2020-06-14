@@ -1,4 +1,4 @@
-# pappas-grill-vales
+# pappas-grill-vales-front
 
 ## Project setup
 ```
