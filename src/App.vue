@@ -1,20 +1,39 @@
 <template>
   <div id="app">
     <vue-progress-bar />
-    <navbar />
-    <router-view />
-    <footer-main />
+    <component :is="layout"></component>
   </div>
 </template>
 
-<style lang="scss" scoped>
-#app {
-  background-image: url('./assets/pattern.png');
-  background-repeat: repeat;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-height: 100vh;
-  overflow-x: hidden;
+<script>
+import DefaultLayout from './layouts/Default'
+import DashboardLayout from './layouts/Dashboard'
+
+export default {
+  components: { DefaultLayout, DashboardLayout },
+  data() {
+    return {
+      layout: 'div',
+    }
+  },
+  watch: {
+    $route(to, from) {
+      this.generateLayoutByRoyterName(to.name)
+    },
+  },
+  methods: {
+    setLayout(value) {
+      this.layout = value
+    },
+    generateLayoutByRoyterName(routerName) {
+      const split = routerName.split('.')
+      const name = split[0] === 'dashboard' ? 'dashboard' : 'default'
+      const layout = `${name}-layout`
+
+      this.setLayout(layout)
+    },
+  },
 }
-</style>
+</script>
+
+<style lang="scss" scoped></style>

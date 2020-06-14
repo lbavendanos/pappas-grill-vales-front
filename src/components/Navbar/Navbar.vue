@@ -62,6 +62,7 @@ export default {
       this.modal.login.show = false
     },
     onSuccess() {
+      this.$router.push({ name: 'dashboard' })
       this.modal.login.show = false
     },
   },
