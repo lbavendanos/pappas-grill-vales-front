@@ -37,7 +37,8 @@ $brand-primary: #da0041;
 $brand-secondary: #ffca00;
 $brand-tertiary: #343a40;
 
-$sub-menu-color: scale-color($brand-primary, $lightness: 90%);
+// $sub-menu-color: scale-color($brand-primary, $lightness: 90%);
+$sub-menu-color: lighten($gray, 12%);
 $filter-background: rgba(0, 0, 0, 0.03);
 
 $brand-colors: (
