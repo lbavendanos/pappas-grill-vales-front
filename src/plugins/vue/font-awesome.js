@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import { library, config, dom } from '@fortawesome/fontawesome-svg-core'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
+import { faHome, faChartBar, faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faBars)
+library.add(faHome, faChartBar, faBars)
 
 /**
  * Setting this config so that Vue-tables-2 will be able to replace sort icons with chevrons
