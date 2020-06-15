@@ -8,7 +8,7 @@
     @hidden="onHiddenModal"
     @show="onShowModal"
   >
-    <div class="card">
+    <form class="card" @submit.prevent="onSubmit">
       <div class="card-body">
         <div class="form-group">
           <label for="inputEmail" class="">Correo Electrónico</label>
@@ -34,7 +34,8 @@
           />
         </div>
       </div>
-    </div>
+      <button type="submit" class="d-none"></button>
+    </form>
 
     <template v-slot:modal-footer="{ ok }">
       <button
