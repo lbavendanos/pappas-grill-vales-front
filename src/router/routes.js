@@ -22,10 +22,18 @@ export default [
     children: [
       {
         name: 'dashboard.home',
-        path: '',
+        path: 'home',
         component: () =>
           import(
             /* webpackChunkName: "dashboard-home" */ '../views/Dashboard/Home/Home.vue'
+          ),
+      },
+      {
+        name: 'dashboard.statistic',
+        path: 'statistic',
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard-statistic" */ '../views/Dashboard/Statistic/Statistic.vue'
           ),
       },
     ],
