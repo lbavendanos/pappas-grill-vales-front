@@ -36,6 +36,32 @@ export default [
             /* webpackChunkName: "dashboard-statistic" */ '../views/Dashboard/Statistic/Statistic.vue'
           ),
       },
+      {
+        name: 'dashboard.setup',
+        path: 'setup',
+        component: () =>
+          import(
+            /* webpackChunkName: "dashboard-setup" */ '../views/Dashboard/Setup/Setup.vue'
+          ),
+        children: [
+          {
+            name: 'dashboard.setup.vales',
+            path: 'vales',
+            redirect: { name: 'dashboard.setup.vales.index' },
+            component: () => import('@/views/Dashboard/Setup/Vale/Vale.vue'),
+            props: true,
+            children: [
+              {
+                name: 'dashboard.setup.vales.index',
+                path: '',
+                component: () =>
+                  import('@/views/Dashboard/Setup/Vale/ValeIndex.vue'),
+                props: true,
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
 ]

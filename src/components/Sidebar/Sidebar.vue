@@ -32,6 +32,17 @@ export default {
           to: 'dashboard.statistic',
           icon: 'chart-bar',
         },
+        {
+          title: 'Setup',
+          name: 'setup',
+          icon: 'cog',
+          children: [
+            {
+              title: 'Vales',
+              to: 'dashboard.setup.vales',
+            },
+          ],
+        },
       ],
       currentItem: null,
       collapse: false,
