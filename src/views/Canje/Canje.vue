@@ -8,6 +8,25 @@
               Vales Pappa Grill
             </h2>
           </div>
+          <div class="container">
+            <div class="row justify-content-md-center">
+              <div class="col-12 col-md-5">
+                <b-alert
+                  v-if="hasErrors"
+                  variant="danger"
+                  show
+                  dismissible
+                  class="mt-4"
+                >
+                  <ul class="list-unstyled m-0">
+                    <li v-for="(error, key) in errors" :key="key">
+                      {{ error }}
+                    </li>
+                  </ul>
+                </b-alert>
+              </div>
+            </div>
+          </div>
           <div class="card-body">
             <div class="row justify-content-md-center">
               <div class="form-group col-12 col-md-5 text-center">
@@ -21,6 +40,7 @@
                   v-model="form.code"
                   type="text"
                   class="form-control"
+                  autocomplete="off"
                 />
               </div>
             </div>
@@ -31,18 +51,36 @@
                     Detalle
                   </div>
                   <div class="card-body">
-                    <p>
-                      Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                      Culpa quidem harum facilis iusto repudiandae aperiam quam
-                      animi quisquam. Tempora, in voluptates! Natus commodi
-                      beatae fugit labore, assumenda earum eveniet numquam.
-                    </p>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Possimus harum molestias voluptates quisquam dicta. Esse,
-                      atque quos! Quos velit nihil sed ipsam? Aliquid temporibus
-                      laborum tempore nam excepturi a earum.
-                    </p>
+                    <ul>
+                      <li>
+                        <strong>Numero de Vale: </strong>
+                        <span>{{ detail._id }}</span>
+                      </li>
+                      <li>
+                        <strong>Pagado: </strong>
+                        <span>{{ detail.pagado }}</span>
+                      </li>
+                      <li>
+                        <strong>Monto: </strong>
+                        <span>{{ detail.monto }}</span>
+                      </li>
+                      <li v-if="detail.creadopor.name">
+                        <strong>Canjeado por: </strong>
+                        <span>{{ detail.creadopor.name }}</span>
+                      </li>
+                      <li>
+                        <strong>Fecha de vencimiento: </strong>
+                        <span>{{ dateFormat(detail.vencimiento) }}</span>
+                      </li>
+                      <li v-if="detail.fechacanje">
+                        <strong>Fecha de canje: </strong>
+                        <span>{{ dateFormat(detail.fechacanje) }}</span>
+                      </li>
+                      <li>
+                        <strong>Descripcion: </strong>
+                        <span>{{ detail.descripcion }}</span>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -52,11 +90,23 @@
             <button
               type="button"
               class="btn btn-secondary mx-1"
+              :disabled="isWorking"
               @click.prevent="onClear"
             >
               Limpiar
             </button>
-            <button type="submit" class="btn btn-brand-secondary mx-1">
+            <button
+              type="submit"
+              class="btn btn-brand-secondary mx-1"
+              :disabled="isWorking"
+            >
+              <div
+                v-if="isWorking"
+                class="spinner-border spinner-border-sm"
+                role="status"
+              >
+                <span class="sr-only">Loading...</span>
+              </div>
               Buscar
             </button>
           </div>
@@ -73,20 +123,83 @@ export default {
       form: {
         code: null,
       },
+      detail: {},
+      submit: false,
+      errors: [],
       show: false,
     }
   },
+  computed: {
+    hasErrors() {
+      return this.errors.length > 0
+    },
+    isWorking() {
+      return this.submit
+    },
+  },
   methods: {
+    getCode() {
+      return this.form.code
+    },
+    setDetail(value) {
+      this.detail = value
+    },
+    dateFormat(value) {
+      const date = moment(value).locale('es')
+
+      return date.format('DD MMMM YYYY h:m a')
+    },
     clearForm() {
       this.form.code = null
     },
     onClear() {
+      this.clearErrors()
       this.clearForm()
+
       this.show = false
     },
-    onSubmit(e) {
-      this.clearForm()
-      this.show = true
+    clearErrors() {
+      this.errors = []
+    },
+    addError(error) {
+      this.errors.push(error)
+    },
+    startSubmit() {
+      this.submit = true
+    },
+    endSubmit() {
+      this.submit = false
+    },
+    async onSubmit(e) {
+      this.startSubmit()
+      this.clearErrors()
+      const code = this.getCode()
+
+      if (!code) {
+        this.$nextTick(() => {
+          this.endSubmit()
+          this.addError('Por favor ingrese el numero del Vale')
+        })
+        return
+      }
+
+      try {
+        const {
+          data: { vales },
+        } = await axios.get(`https://valespappas.herokuapp.com/vales/${code}`)
+
+        if (!vales || vales.length == 0) {
+          this.addError('Numero de Vale incorrecto')
+          return
+        }
+
+        this.setDetail(vales[0])
+        this.show = true
+      } catch (error) {
+        this.addError('Numero de Vale incorrecto')
+      } finally {
+        this.endSubmit()
+      }
     },
   },
 }
