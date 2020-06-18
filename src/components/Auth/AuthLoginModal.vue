@@ -8,6 +8,14 @@
     @hidden="onHiddenModal"
     @show="onShowModal"
   >
+    <b-alert v-if="hasErrors" variant="danger" show dismissible class="">
+      <ul class="list-unstyled m-0">
+        <li v-for="(error, key) in errors" :key="key">
+          {{ error }}
+        </li>
+      </ul>
+    </b-alert>
+
     <form class="card" @submit.prevent="onSubmit">
       <div class="card-body">
         <div class="form-group">
@@ -15,7 +23,7 @@
           <input
             id="inputEmail"
             ref="email"
-            v-model="form.email"
+            v-model="form.usuario"
             type="text"
             name="email"
             placeholder="Ingrese su correo electrónico"
@@ -26,7 +34,7 @@
           <label for="inputPassword" class="">Contraseña</label>
           <input
             id="inputPassword"
-            v-model="form.password"
+            v-model="form.contraseña"
             type="password"
             name="password"
             placeholder="Ingrese su contraseña"
@@ -43,7 +51,13 @@
         :disabled="isWorking"
         @click="onSubmit(ok)"
       >
-        <span v-show="isWorking" class="spinner-border spinner-border-sm" />
+        <div
+          v-if="isWorking"
+          class="spinner-border spinner-border-sm"
+          role="status"
+        >
+          <span class="sr-only">Loading...</span>
+        </div>
         Ingresar
       </button>
     </template>
@@ -62,13 +76,17 @@ export default {
     return {
       title: 'Iniciar Sesión',
       form: {
-        email: null,
-        password: null,
+        usuario: null,
+        contraseña: null,
       },
+      errors: [],
       submit: false,
     }
   },
   computed: {
+    hasErrors() {
+      return this.errors.length > 0
+    },
     modalShow: {
       get() {
         return this.show
@@ -82,13 +100,19 @@ export default {
     },
   },
   methods: {
-    getData() {
+    getCredentials() {
       return this.form
     },
     clearForm() {
-      this.form.file = null
+      this.form.usuario = null
+      this.form.contraseña = null
     },
-    clearErrors() {},
+    clearErrors() {
+      this.errors = []
+    },
+    addError(error) {
+      this.errors.push(error)
+    },
     startSubmit() {
       this.submit = true
     },
@@ -96,27 +120,55 @@ export default {
       this.submit = false
     },
     onShowModal() {
-      this.clearErrors()
       this.clearForm()
+      this.clearErrors()
       this.$emit('show')
     },
     onHiddenModal() {
       this.$emit('hidden')
     },
+    mapUser(value) {
+      const { token } = value
+      const { user } = value
+
+      return {
+        token,
+        name: user.name,
+        email: user.email,
+        role: user.role.name,
+      }
+    },
     async onSubmit(ok) {
       this.startSubmit()
       this.clearErrors()
 
-      const data = this.getData()
+      const apiUrl = process.env.VUE_APP_API_URL
+      const credentials = this.getCredentials()
+
+      if (!credentials.usuario || !credentials.contraseña) {
+        this.$nextTick(() => {
+          if (!credentials.usuario) {
+            this.addError('Por favor ingrese su usuario')
+          }
+
+          if (!credentials.contraseña) {
+            this.addError('Por favor ingrese su contraseña')
+          }
+          this.endSubmit()
+        })
+        return
+      }
 
       try {
-        // const response = await axios.post('', data)
+        const {
+          data: { user },
+        } = await axios.post(`${apiUrl}/login`, credentials)
 
+        this.updateUser(this.mapUser(user))
         this.$emit('success')
-
-        this.clearForm()
       } catch (error) {
-        if (error.response.status === 404 || error.response.status == 422) {
+        if (error.response.status == 401) {
+          this.addError(error.response.data.error)
         }
       } finally {
         this.endSubmit()

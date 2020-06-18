@@ -1,3 +1,5 @@
+import { auth } from './guards'
+
 export default [
   {
     path: '/',
@@ -19,6 +21,7 @@ export default [
       import(
         /* webpackChunkName: "dashboard" */ '../views/Dashboard/Dashboard.vue'
       ),
+    beforeEnter: auth.checkIfAuthenticated,
     children: [
       {
         name: 'dashboard.home',

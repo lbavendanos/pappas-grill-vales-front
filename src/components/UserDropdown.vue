@@ -10,7 +10,7 @@
       <div class="dropdown-title">
         <img :src="avatar" alt="user" class="rounded-circle" width="25" />
         <span class="ml-2 font-medium">
-          {{ fullname }}
+          {{ auth.user.name }}
         </span>
       </div>
     </template>
@@ -20,8 +20,9 @@
           <img :src="avatar" alt="user" class="rounded" width="80" />
         </div>
         <div class="ml-2">
-          <h4 class="mb-0">{{ fullname }}</h4>
-          <p class="mb-0 text-muted">{{ email }}</p>
+          <h4 class="mb-0">{{ auth.user.name }}</h4>
+          <p class="mb-0 text-muted">{{ auth.user.email }}</p>
+          <span class="mb-0 text-muted">{{ auth.user.role }}</span>
         </div>
       </div>
     </b-dropdown-header>
@@ -37,12 +38,11 @@ export default {
     return {
       avatar:
         'https://pbs.twimg.com/profile_images/453956388851445761/8BKnRUXg.png',
-      fullname: 'Test',
-      email: 'test@test.com',
     }
   },
   methods: {
     onLogout() {
+      this.updateUser({})
       this.$router.push({ name: 'home' })
     },
   },
