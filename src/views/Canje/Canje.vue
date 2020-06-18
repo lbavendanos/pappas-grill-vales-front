@@ -54,19 +54,19 @@
                     <ul>
                       <li>
                         <strong>Numero de Vale: </strong>
-                        <span>{{ detail._id }}</span>
+                        <span>{{ detail.idvale }}</span>
                       </li>
                       <li>
-                        <strong>Pagado: </strong>
-                        <span>{{ detail.pagado }}</span>
+                        <strong>Estado: </strong>
+                        <span>{{ detail.activo ? 'Libre' : 'Canjeado' }}</span>
                       </li>
                       <li>
                         <strong>Monto: </strong>
-                        <span>{{ detail.monto }}</span>
+                        <span>{{ currencyFormat(detail.monto) }}</span>
                       </li>
-                      <li v-if="detail.creadopor.name">
+                      <li v-if="detail.canjeadopor.name">
                         <strong>Canjeado por: </strong>
-                        <span>{{ detail.creadopor.name }}</span>
+                        <span>{{ detail.canjeadopor.name }}</span>
                       </li>
                       <li>
                         <strong>Fecha de vencimiento: </strong>
@@ -144,6 +144,11 @@ export default {
     setDetail(value) {
       this.detail = value
     },
+    currencyFormat(value) {
+      const number = numeral(value).format('0,0.00')
+
+      return `S/${number}`
+    },
     dateFormat(value) {
       const date = moment(value).locale('es')
 
@@ -173,6 +178,8 @@ export default {
     async onSubmit(e) {
       this.startSubmit()
       this.clearErrors()
+
+      const apiUrl = process.env.VUE_APP_API_URL
       const code = this.getCode()
 
       if (!code) {
@@ -185,15 +192,15 @@ export default {
 
       try {
         const {
-          data: { vales },
-        } = await axios.get(`https://valespappas.herokuapp.com/vales/${code}`)
+          data: { valeDB },
+        } = await axios.get(`${apiUrl}/vales/${code}`)
 
-        if (!vales || vales.length == 0) {
+        if (!valeDB) {
           this.addError('Numero de Vale incorrecto')
           return
         }
 
-        this.setDetail(vales[0])
+        this.setDetail(valeDB)
         this.show = true
       } catch (error) {
         this.addError('Numero de Vale incorrecto')
