@@ -130,12 +130,20 @@ export default {
     mapUser(value) {
       const { token } = value
       const { user } = value
+      const locals = _.map(user.locals, (o) => {
+        const id = o._id
+        const { name } = o
+
+        return { id, name }
+      })
 
       return {
         token,
+        id: user._id,
         name: user.name,
         email: user.email,
         role: user.role.name,
+        locales: locals,
       }
     },
     async onSubmit(ok) {
