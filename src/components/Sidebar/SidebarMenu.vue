@@ -15,6 +15,7 @@
       </li>
       <li v-for="(item, index) in items" :key="index" class="nav-item">
         <a
+          v-if="item.visible"
           v-b-tooltip.hover="tooltip"
           href="#"
           class="nav-link text-center p-0 m-0"

@@ -63,6 +63,23 @@ export default [
               },
             ],
           },
+          {
+            name: 'dashboard.setup.register',
+            path: 'register',
+            redirect: { name: 'dashboard.setup.register.index' },
+            component: () =>
+              import('@/views/Dashboard/Setup/Register/Register.vue'),
+            props: true,
+            children: [
+              {
+                name: 'dashboard.setup.register.index',
+                path: '',
+                component: () =>
+                  import('@/views/Dashboard/Setup/Register/RegisterIndex.vue'),
+                props: true,
+              },
+            ],
+          },
         ],
       },
     ],

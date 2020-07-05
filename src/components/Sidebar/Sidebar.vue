@@ -19,7 +19,17 @@ import {
 export default {
   data() {
     return {
-      items: [
+      items: [],
+      currentItem: null,
+      collapse: false,
+      loading: false,
+    }
+  },
+  computed: {
+    structure() {
+      const { user } = this.auth
+
+      return [
         {
           title: 'Dashboard',
           name: 'home',
@@ -31,6 +41,8 @@ export default {
           name: 'statistic',
           to: 'dashboard.statistic',
           icon: 'chart-bar',
+          disabled: user.role === 'Administrador',
+          visible: user.role !== 'Administrador',
         },
         {
           title: 'Setup',
@@ -40,14 +52,19 @@ export default {
             {
               title: 'Vales',
               to: 'dashboard.setup.vales',
+              disabled: user.role === 'Administrador',
+              visible: user.role !== 'Administrador',
+            },
+            {
+              title: 'Registrar',
+              to: 'dashboard.setup.register',
+              disabled: user.role === 'Supervisor',
+              visible: user.role !== 'Supervisor',
             },
           ],
         },
-      ],
-      currentItem: null,
-      collapse: false,
-      loading: false,
-    }
+      ]
+    },
   },
   watch: {
     $route(to, from) {
@@ -57,7 +74,7 @@ export default {
     },
   },
   mounted() {
-    this.setItem(this.mapItem(this.items))
+    this.setItem(this.mapItem(this.structure))
     this.changeByRouterName(this.$route.name)
     this.loaded()
   },
@@ -87,17 +104,19 @@ export default {
       return _.map(value, (item) => {
         item.children = this.mapChildren(item.children)
 
+        const visible = true
         const disabled = false
         const active = false
 
-        return { disabled, active, ...item }
+        return { visible, disabled, active, ...item }
       })
     },
     mapChildren(value) {
       return _.map(value, (item) => {
+        const visible = true
         const disabled = false
 
-        return { disabled, ...item }
+        return { visible, disabled, ...item }
       })
     },
     getActiveItem() {

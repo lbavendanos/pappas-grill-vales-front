@@ -64,7 +64,7 @@
                         <strong>Monto: </strong>
                         <span>{{ currencyFormat(detail.monto) }}</span>
                       </li>
-                      <li v-if="detail.canjeadopor.name">
+                      <li v-if="detail.canjeadopor">
                         <strong>Canjeado por: </strong>
                         <span>{{ detail.canjeadopor.name }}</span>
                       </li>

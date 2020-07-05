@@ -13,9 +13,9 @@
             <li
               v-for="(child, index) in children"
               :key="index"
-              class="nav-item"
+              class="nav-item m-0"
             >
-              <div class="">
+              <div v-if="child.visible" class="mb-2">
                 <router-link
                   class="nav-link p-0 m-0"
                   :to="{ name: child.to || '' }"
