@@ -6,12 +6,22 @@ import {
   faTicketAlt,
   faTools,
   faPen,
+  faTrashAlt,
   faCog,
   faBars,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faHome, faChartBar, faTicketAlt, faTools, faPen, faCog, faBars)
+library.add(
+  faHome,
+  faChartBar,
+  faTicketAlt,
+  faTools,
+  faPen,
+  faTrashAlt,
+  faCog,
+  faBars
+)
 
 /**
  * Setting this config so that Vue-tables-2 will be able to replace sort icons with chevrons

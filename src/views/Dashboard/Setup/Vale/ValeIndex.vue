@@ -2,7 +2,9 @@
   <div v-if="loading" class="container-fluid px-4 my-4">
     <div class="card">
       <div class="card-header">
-        <button class="btn btn-primary">Agregar Vale</button>
+        <button class="btn btn-primary" @click="onValeOpenModal">
+          Agregar Vale
+        </button>
       </div>
       <div class="card-body">
         <b-table
@@ -13,13 +15,36 @@
           :items="table.items"
         >
           <template v-slot:cell(accion)="row">
-            <button class="btn btn-primary btn-sm" @click="onEdit(row.item.id)">
+            <button
+              class="btn btn-primary btn-sm mr-1"
+              @click="onEdit(row.item.id)"
+            >
               <fa icon="pen" />
+            </button>
+            <button
+              class="btn btn-danger btn-sm ml-1"
+              @click="onDelete(row.item.id)"
+            >
+              <fa icon="trash-alt" />
             </button>
           </template>
         </b-table>
       </div>
     </div>
+
+    <vale-modal
+      v-model="modal.vale.value"
+      :show="modal.vale.show"
+      @success="onSuccess"
+      @hidden="onValeHiddenModal"
+    />
+
+    <vale-delete-modal
+      :show="modal.delete.show"
+      :vale-id="modal.delete.valeId"
+      @success="onSuccess"
+      @hidden="onDeleteHiddenModal()"
+    />
   </div>
 </template>
 
@@ -61,6 +86,16 @@ export default {
         ],
         items: [],
       },
+      modal: {
+        vale: {
+          show: false,
+          value: {},
+        },
+        delete: {
+          show: false,
+          valeId: '',
+        },
+      },
       loading: false,
     }
   },
@@ -72,6 +107,20 @@ export default {
     loaded() {
       this.loading = true
     },
+    async fetchVale(id) {
+      const token = this.auth.user.token
+      const headers = { token }
+      const params = { headers }
+      const apiUrl = process.env.VUE_APP_API_URL
+
+      try {
+        const {
+          data: { valeDB },
+        } = await axios.get(`${apiUrl}/vales/${id}`, params)
+
+        return valeDB
+      } catch (error) {}
+    },
     async fetchVales() {
       const token = this.auth.user.token
       const headers = { token }
@@ -81,7 +130,7 @@ export default {
       try {
         const {
           data: { vales },
-        } = await axios.get(`${apiUrl}/vales`, params)
+        } = await axios.get(`${apiUrl}/vales?inicio=1&rango=15`, params)
 
         return vales
       } catch (error) {}
@@ -114,8 +163,47 @@ export default {
 
       this.table.items = items
     },
-    onEdit(id) {
-      console.log(id)
+    setValeId(value) {
+      this.modal.delete.valeId = value
+    },
+    setVale(value) {
+      this.modal.vale.value = value
+    },
+    mapVale(value) {
+      return {
+        id: value.idvale,
+        monto: value.monto,
+        vencimiento: moment(value.vencimiento).format('YYYY-MM-DD'),
+        descripcion: value.descripcion,
+      }
+    },
+    clearVale() {
+      this.modal.vale.value = {}
+    },
+    onValeOpenModal() {
+      this.modal.vale.show = true
+    },
+    onValeHiddenModal() {
+      this.clearVale()
+      this.modal.vale.show = false
+    },
+    onDeleteOpenModal() {
+      this.modal.delete.show = true
+    },
+    onDeleteHiddenModal() {
+      this.modal.delete.show = false
+    },
+    async onSuccess() {
+      await this.refreshTable()
+    },
+    async onEdit(id) {
+      const response = await this.fetchVale(id)
+      this.setVale(this.mapVale(response))
+      this.onValeOpenModal()
+    },
+    onDelete(id) {
+      this.setValeId(id)
+      this.onDeleteOpenModal()
     },
   },
 }
