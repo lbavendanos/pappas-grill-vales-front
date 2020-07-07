@@ -52,9 +52,12 @@
                           </li>
                           <li>
                             <strong>Estado: </strong>
-                            <span>{{
-                              detail.activo ? 'Libre' : 'Canjeado'
-                            }}</span>
+                            <span
+                              :class="
+                                detail.activo ? 'text-success' : 'text-danger'
+                              "
+                              >{{ detail.activo ? 'Libre' : 'Canjeado' }}</span
+                            >
                           </li>
                           <li>
                             <strong>Monto: </strong>

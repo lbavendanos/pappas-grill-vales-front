@@ -149,7 +149,7 @@ export default {
         return {
           id: item.idvale,
           monto: item.monto,
-          creador: item.creadopor.name,
+          creador: item.creadopor ? item.creadopor.name : '',
           fechaCreacion: this.dateFormat(item.creacion),
           fechaVencimiento: this.dateFormat(item.vencimiento),
           locales: locales,
