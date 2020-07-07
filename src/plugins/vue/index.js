@@ -4,7 +4,7 @@ import VueProgressBar from 'vue-progressbar'
 import BootstrapVue from 'bootstrap-vue'
 import Toasted from 'vue-toasted'
 import VueEvents from 'vue-events'
-// import VueGoogleCharts from 'vue-google-charts'
+import VueGoogleCharts from 'vue-google-charts'
 import './font-awesome'
 
 Vue.use(VueEvents)
@@ -13,7 +13,7 @@ Vue.use(VueProgressBar, {
   thickness: '3px',
 })
 Vue.use(BootstrapVue)
-// Vue.use(VueGoogleCharts)
+Vue.use(VueGoogleCharts)
 
 Vue.use(Toasted, {
   router,
