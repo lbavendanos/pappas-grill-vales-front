@@ -37,7 +37,7 @@
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.15.0",
     "core-js": "^3.6.5",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "moment-timezone": "^0.5.31",
     "numeral": "^2.0.6",
     "voca": "^1.4.0",
